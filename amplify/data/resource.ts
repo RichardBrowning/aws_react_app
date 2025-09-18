@@ -7,19 +7,25 @@ specifies that any unauthenticated user can "create", "read", "update",
 and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Todo: a
+  // define a note model with fields: name, description, image
+  Note: a
     .model({
-      content: a.string(),
+      name:a.string(),
+      description: a.string(),
+      image: a.string(),
     })
-    .authorization((allow) => [allow.guest()]),
+    // allow only the owner of a note to perform CRUD operations on it
+    .authorization((allow) => [allow.owner()]),
 });
 
+// export the generated TypeScript type for the schema
 export type Schema = ClientSchema<typeof schema>;
 
+// export the Data resource with the schema and authorization rules
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'identityPool',
+    defaultAuthorizationMode: 'userPool',
   },
 });
 
